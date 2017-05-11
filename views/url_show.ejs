@@ -2,12 +2,65 @@
 <html lang="en">
   <head>
     <title>URLSHOWS</title>
+
+  <style type="text/css">
+
+  body {
+    text-align: center;
+  }
+
+  ul {
+    margin-right:20px;
+    padding-top: 100px;
+    font-family: sans-serif;
+    list-style: none;
+    font-size: 25px;
+  }
+
+  button {
+    float:;
+    margin-right: ;
+
+  }
+  nav{
+    float: right;
+    font-family: sans-serif;
+    padding-right: 20px;
+  }
+  h1{
+    font-family: sans-serif;
+    padding-left: 100px;
+  }
+  form {
+    font-family: sans-serif;
+
+
+  }
+  input {
+    font-size: 14px;
+    border: solid;
+    border-width: 1px;
+    box-shadow:
+
+  }
+
+  </style>
+
   </head>
+
+    <header><% include ./partials/_header %></header>
+
 <body>
   <ul>
-    <li> <%= short + "  " + shortLong %></li>
+    <li> <%= short %></li>
+    <li> <%= shortLong %></li>
   </ul>
-      <a href=http://google.com>Shorten URL</a>
+  <form action="/urls/<%= short %>" method="POST" style="margin:150px;">
+      <label for="longURL">Short URL:</label>
+      <input id="shortURL" type="text" name="shortURL"  style="width: 300px">
+      <input type="submit" value="Update Url">
+    </form>
+
 
 </body>
 </html>

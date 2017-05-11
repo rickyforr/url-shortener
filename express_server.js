@@ -23,32 +23,36 @@ app.get("/", (req, res) => {
   res.end("Hello!");
 });
 
-app.get("/urls", (req, res) => {             //main page with database
 
+//Main Page
+app.get("/urls", (req, res) => {             //main page with database
   var templateVars = {urls: urlDatabase};
   res.render("urls_index", templateVars);
   console.log(req.params);
 
 });
 
-
+//Create
 app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url to shorten
   res.render("urls_new");
 });
 
+//Take user to long URL if short URL is given
 app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take user to correspoding longUrl
   let longURL = urlDatabase[req.params.shortURL];
   console.log(longURL);
   res.redirect(longURL);
 });
 
+
+//Retrieve Single URL for update
 app.get("/urls/:id", (req, res) => {
   let singleUrl = urlDatabase[req.params.id];
-
   console.log(singleUrl);
   res.render("url_show", {shortLong:singleUrl, short:req.params.id});
 });
 
+//Create
 app.post("/urls", (req, res) => {
   let shortURL = crypto.randomBytes(3).toString('hex');   // generate 6digit random string asign to shortUrl
   urlDatabase[shortURL] = req.body.longURL                // add shortUrl : longUrl(submitted in form) to urlDatabase
@@ -56,11 +60,22 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls");                                  // Redirect user to main page
 });
 
-app.post("/urls/:shortURL/delete", (req, res) => {
-delete urlDatabase[req.params.shortURL];
-res.redirect("/urls");
+//Update
+app.post("/urls/:id", (req, res) => {
+  let singleUrl = urlDatabase[req.params.id];
+  urlDatabase[req.body.shortURL]= urlDatabase[req.params.id]
+  console.log(urlDatabase[req.body.shortURL])
+  res.redirect("/urls");
 });
 
+
+//Delete URL
+app.post("/urls/:shortURL/delete", (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
+});
+
+//Listen
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
