@@ -1,8 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head></head>
+  <head>
+<style type="text/css">
+
+  li {
+    padding-top: 50px;
+    font-family: sans-serif;
+  }
+
+  button {
+    float:;
+    margin-right: ;
+
+  }
+  nav{
+    float: right;
+    font-family: sans-serif;
+    padding-right: 20px;
+  }
+  h1{
+    font-family: sans-serif;
+    padding-left: 100px;
+  }
+  form {
+    font-family: sans-serif;
+  }
+
+</style>
+
+  </head>
+   <header><% include ./partials/_header %></header>
   <body style="font-size:20px; padding:50px;">
-    <% include ./partials/_header %>
+
     <form action="/urls" method="POST" style="margin:150px;">
       <label for="longURL">Enter a URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">

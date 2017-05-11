@@ -16,10 +16,6 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-function generateRandomString() {
-let shortURL = Math.random().toString(36).substring(7);
-return shortURL
-}
 
 
 //Routes
@@ -39,17 +35,22 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take user to correspoding longUrl
+  let longURL = urlDatabase[req.params.shortURL];
+  console.log(longURL);
+  res.redirect(longURL);
+});
+
 app.get(`/urls/:id`, (req, res) => {
    let templateVars = { shortURL: req.params.id };
-console.log(req.path)
+
   res.send("urls_show");
 });
 
 
-
 app.post("/urls", (req, res) => {
-  let shortURL = crypto.randomBytes(3).toString('hex');
-  urlDatabase[shortURL] = req.body.longURL
+  let shortURL = crypto.randomBytes(3).toString('hex'); // generate 6digit random string asign to shortUrl
+  urlDatabase[shortURL] = req.body.longURL // add shortUrl : longUrl(submitted in form) to urlDatabase
   console.log(req.body);  // debug statement to see POST parameters
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });

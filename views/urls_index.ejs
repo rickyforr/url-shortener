@@ -3,18 +3,49 @@
 <head>
 
   <title>TinyApp</title>
+
+<style type="text/css">
+
+  li {
+    padding-top: 50px;
+    font-family: sans-serif;
+  }
+
+  button {
+    float:;
+    margin-right: ;
+
+  }
+  nav{
+    float: right;
+    font-family: sans-serif;
+    padding-right: 20px;
+  }
+  h1{
+    font-family: sans-serif;
+    padding-left: 100px;
+  }
+
+</style>
 </head>
 <body>
-<header> <% include ./partials/_header %></header>
-<h1></h1>
+<header> <% include ./partials/_header %>
 
+
+</header>
+
+<h1 style="text-align: center;">urlDatabase</h1>
+<div>
 <ul>
 <% for(var i in urls) {%>
-  <li> <%= i + " ======> " + urls[i]%> </li>
+  <li> <%= i + " ======> " + urls[i]%>
+  <form method="POST" action="/urls/${i}/delete"><button>Delete</button></form>
+  </li>
   <% } %>
 
 </ul>
+</div>
 
-<a href=http://google.com>Shorten URL</a>
+
 </body>
 </html>
