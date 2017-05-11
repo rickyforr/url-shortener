@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
   res.end("Hello!");
 });
 
-app.get("/urls", (req, res) => {
+app.get("/urls", (req, res) => {             //main page with database
 
   var templateVars = {urls: urlDatabase};
   res.render("urls_index", templateVars);
@@ -32,7 +32,7 @@ app.get("/urls", (req, res) => {
 });
 
 
-app.get("/urls/new", (req, res) => {
+app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url to shorten
   res.render("urls_new");
 });
 
@@ -42,21 +42,23 @@ app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take u
   res.redirect(longURL);
 });
 
-//app.get(`/urls/:id`, (req, res) => {
-  // let templateVars = { shortURL: req.params.id };
-  //res.send("urls_show");
-//});
+app.get("/urls/:id", (req, res) => {
+  let singleUrl = urlDatabase[req.params.id];
+
+  console.log(singleUrl);
+  res.render("url_show", {shortLong:singleUrl, short:req.params.id});
+});
 
 app.post("/urls", (req, res) => {
-  let shortURL = crypto.randomBytes(3).toString('hex'); // generate 6digit random string asign to shortUrl
-  urlDatabase[shortURL] = req.body.longURL // add shortUrl : longUrl(submitted in form) to urlDatabase
-  console.log(req.body);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  let shortURL = crypto.randomBytes(3).toString('hex');   // generate 6digit random string asign to shortUrl
+  urlDatabase[shortURL] = req.body.longURL                // add shortUrl : longUrl(submitted in form) to urlDatabase
+  console.log(req.body);                                  // debug statement to see POST parameters
+  res.redirect("/urls");                                  // Redirect user to main page
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
 delete urlDatabase[req.params.shortURL];
-res.send("Url Deleted");
+res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
