@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
 <head>
 <style type="text/css">
@@ -13,11 +12,15 @@
     float:;
     margin-right: ;
 
+
   }
   nav{
     float: right;
     font-family: sans-serif;
     padding-right: 20px;
+    background-color: #D1C1E1;
+    padding: 20px;
+    box-shadow: 10px 10px 5px #888888;
   }
   h1{
     font-family: sans-serif;
@@ -35,6 +38,13 @@
 </head>
 <body >
 <p style="text-align:center; ">URL SHORTENER 2017</p>
+
+<form action="/login" method="POST" style="margin:150px;">
+
+      <input id="login" type="text" name="name" style="width: 300px">
+      <input class="submit" type="submit" value="Login">
+    </form>
+
 <nav>
 <a href=http://localhost:8080/urls/new>Shorten URL</a>
 <br>
