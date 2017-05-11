@@ -27,6 +27,7 @@ app.get("/urls", (req, res) => {
 
   var templateVars = {urls: urlDatabase};
   res.render("urls_index", templateVars);
+  console.log(req.params);
 
 });
 
@@ -41,18 +42,21 @@ app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take u
   res.redirect(longURL);
 });
 
-app.get(`/urls/:id`, (req, res) => {
-   let templateVars = { shortURL: req.params.id };
-
-  res.send("urls_show");
-});
-
+//app.get(`/urls/:id`, (req, res) => {
+  // let templateVars = { shortURL: req.params.id };
+  //res.send("urls_show");
+//});
 
 app.post("/urls", (req, res) => {
   let shortURL = crypto.randomBytes(3).toString('hex'); // generate 6digit random string asign to shortUrl
   urlDatabase[shortURL] = req.body.longURL // add shortUrl : longUrl(submitted in form) to urlDatabase
   console.log(req.body);  // debug statement to see POST parameters
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
+});
+
+app.post("/urls/:shortURL/delete", (req, res) => {
+delete urlDatabase[req.params.shortURL];
+res.send("Url Deleted");
 });
 
 app.listen(PORT, () => {
