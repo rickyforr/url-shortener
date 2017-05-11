@@ -97,6 +97,16 @@ app.get("/logout", (req, res) => {
 
 });
 
+//Registration
+app.get("/urls", (req, res) => {             //registration
+  let templateVars = {
+  username: req.cookies["username"],
+  urls: urlDatabase
+  };
+  res.render("urls_index", templateVars);
+
+});
+
 
 //Delete URL
 app.post("/urls/:shortURL/delete", (req, res) => {
