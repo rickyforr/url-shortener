@@ -1,55 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style type="text/css">
 
-  li {
-    padding-top: 50px;
-    font-family: sans-serif;
-  }
-
-  button {
-    float:;
-    margin-right: ;
-
-
-  }
-  nav{
-    float: right;
-    font-family: sans-serif;
-    padding-right: 20px;
-    background-color: #D1C1E1;
-    padding: 20px;
-    box-shadow: 10px 10px 5px #888888;
-  }
-  h1{
-    font-family: sans-serif;
-    padding-left: 100px;
-  }
-
-</style>
-  <title></title>
-  <style type="text/css">
-    p {
-      font-family: sans-serif;
-      font-size: 15px;
-    }
-  </style>
-</head>
 <body >
-<p style="text-align:center; ">URL SHORTENER 2017</p>
+  <nav>
+    <a href=http://localhost:8080/urls/new>Shorten URL</a>
+    <br>
+     <a href="http://localhost:8080/urls">Url Database</a>
+  </nav>
 
-<form action="/login" method="POST" style="margin:150px;">
 
-      <input id="login" type="text" name="name" style="width: 300px">
-      <input class="submit" type="submit" value="Login">
+
+<% if (username == null) {%>
+
+
+    <form class="login" action="/login" method="POST" >
+      <input id="username" type="text" name="username" style="width: 300px">
+      <input class="login" type="submit" value="Login">
+
     </form>
 
-<nav>
-<a href=http://localhost:8080/urls/new>Shorten URL</a>
-<br>
-<a href="http://localhost:8080/urls">Url Database</a>
-</nav>
+<%} else {%>
+
+<p><%= username %></p>
+<form class="login" action="/logout" method="GET" >
+
+      <input class="logout" type="submit" value="Logout">
+
+    </form>
+<% } %>
 
 </body>
 </html>

@@ -5,61 +5,11 @@
   <title>TinyApp</title>
 
 <style type="text/css">
+ li.url {
+  margin:10px 10px 100px 10px;
 
-  ul {
-    text-decoration: none;
-    list-style: none;
-    font-size: 17px;
+ }
 
-
-
-  }
-
-  li {
-    padding-left: 40px;
-    font-family: sans-serif;
-    background-color: #D1C1E1;
-    margin: 70px 480px 50px 0px;
-
-    padding: 20px;
-    box-shadow: 10px 10px 5px #888888;
-    border-radius: 40px
-
-
-  }
-
-  button {
-    float:right;
-    margin-right:200px ;
-    background-color: white;
-    color:purple;
-    border-style:none;
-    font-size: 15px;
-    border-radius: 20px;
-
-
-  }
-  nav{
-    float: right;
-    font-family: sans-serif;
-    padding-right: 20px;
-    background-color: #D1C1E1;
-    padding: 20px;
-    box-shadow: 10px 10px 5px #888888;
-  }
-  h1{
-    font-family: sans-serif;
-    padding-left: 110px;
-    margin-left: 50px;
-  }
-
-  div{
-    margin-left: 500px;
-  }
-  a.edit {
-
-    padding-bottom:px;
-  }
 </style>
 
 </head>
@@ -69,12 +19,13 @@
      <% include ./partials/_header %>
      </header>
 
-        <h1 style="text-align: center;">urlDatabase</h1>
+
 
            <div>
+            <h1 style="text-align: center;">urlDatabase</h1>
               <ul>
                  <% for(var i in urls) {%>
-                    <li> <%= i + " ======> " + urls[i]%>
+                    <li class="url"> <%= i + " ======> " + urls[i]%>
                        <form method="POST" action="/urls/<%= i %>/delete"><button>Delete</button></form>
                           <a class="edit" href="/urls/<%= i %>" style="margin-left: 20px;">Edit</a>
                     </li>

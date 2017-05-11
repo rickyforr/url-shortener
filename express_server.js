@@ -29,15 +29,21 @@ app.get("/", (req, res) => {
 
 //Main Page
 app.get("/urls", (req, res) => {             //main page with database
-  var templateVars = {urls: urlDatabase};
+  let templateVars = {
+  username: req.cookies["username"],
+  urls: urlDatabase
+  };
   res.render("urls_index", templateVars);
-  console.log(req.params);
 
 });
 
 //Create
 app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url to shorten
-  res.render("urls_new");
+  let templateVars = {
+  username: req.cookies["username"],
+  urls: urlDatabase
+  };
+  res.render("urls_new", templateVars);
 });
 
 //Take user to long URL if short URL is given
@@ -69,6 +75,26 @@ app.post("/urls/:id", (req, res) => {
   urlDatabase[req.body.shortURL]= urlDatabase[req.params.id]
   console.log(urlDatabase[req.body.shortURL])
   res.redirect("/urls");
+});
+
+//Login
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username)
+  console.log(res.cookie)
+  let templateVars = {
+  username: req.cookies["username"],
+  urls: urlDatabase
+};
+  res.redirect("/urls");
+
+});
+
+//Logout
+app.get("/logout", (req, res) => {
+  res.clearCookie("username");
+
+  res.redirect("/urls");
+
 });
 
 
