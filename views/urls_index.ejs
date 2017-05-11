@@ -5,47 +5,34 @@
   <title>TinyApp</title>
 
 <style type="text/css">
+ li.url {
+  margin:10px 10px 100px 10px;
 
-  li {
-    padding-top: 50px;
-    font-family: sans-serif;
-  }
-
-  button {
-    float:;
-    margin-right: ;
-
-  }
-  nav{
-    float: right;
-    font-family: sans-serif;
-    padding-right: 20px;
-  }
-  h1{
-    font-family: sans-serif;
-    padding-left: 100px;
-  }
+ }
 
 </style>
+
 </head>
-<body>
-<header> <% include ./partials/_header %>
+   <body>
+
+     <header>
+     <% include ./partials/_header %>
+     </header>
 
 
-</header>
 
-<h1 style="text-align: center;">urlDatabase</h1>
-<div>
-<ul>
-<% for(var i in urls) {%>
-  <li> <%= i + " ======> " + urls[i]%>
-  <form method="POST" action="/urls/<%= i %>/delete"><button>Delete</button></form>
-  </li>
-  <% } %>
+           <div>
+            <h1 style="text-align: center;">urlDatabase</h1>
+              <ul>
+                 <% for(var i in urls) {%>
+                    <li class="url"> <%= i + " ======> " + urls[i]%>
+                       <form method="POST" action="/urls/<%= i %>/delete"><button>Delete</button></form>
+                          <a class="edit" href="/urls/<%= i %>" style="margin-left: 20px;">Edit</a>
+                    </li>
+                        <% } %>
 
-</ul>
-</div>
+              </ul>
+            </div>
 
-
-</body>
+    </body>
 </html>
