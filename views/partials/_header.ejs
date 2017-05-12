@@ -9,22 +9,16 @@
 
 
 <% if (username == null) {%>
-
-
-    <form class="login" action="/login" method="POST" >
+  <form class="login" action="/login" method="POST" >
       <input id="username" type="text" name="username" style="width: 300px">
       <input class="login" type="submit" value="Login">
-
-    </form>
+  </form>
 
 <%} else {%>
-
 <p><%= username %></p>
-<form class="login" action="/logout" method="GET" >
-
-      <input class="logout" type="submit" value="Logout">
-
-    </form>
+  <form class="login" action="/logout" method="GET" >
+  <input class="logout" type="submit" value="Logout">
+  </form>
 <% } %>
 
 </body>

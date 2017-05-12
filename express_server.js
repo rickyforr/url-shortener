@@ -13,12 +13,24 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 
 
-//data
+//Databases
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "rich": {
+    id: "rich1",
+    email: "rich@rich.com",
+    password: "abc"
+  },
+ "ron": {
+    id: "ron1",
+    email: "ron@ron.com",
+    password: "123"
+  }
+}
 
 
 //Routes
@@ -98,13 +110,23 @@ app.get("/logout", (req, res) => {
 });
 
 //Registration
-app.get("/urls", (req, res) => {             //registration
+app.get("/register", (req, res) => {             //registration page
   let templateVars = {
   username: req.cookies["username"],
   urls: urlDatabase
   };
-  res.render("urls_index", templateVars);
+  res.render("url_register", templateVars);
 
+});
+
+//Registration Submission and database update
+app.post("/register", (req,res) => {
+  let userID = crypto.randomBytes(3).toString('hex');
+  users.userID = {id: "userID", email: req.body.email,
+    password: req.body.password}
+
+  res.cookie('username', userID)
+  res.redirect("/urls");
 });
 
 
