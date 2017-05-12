@@ -43,8 +43,10 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {             //main page with database
   let templateVars = {
   username: req.cookies["username"],
-  urls: urlDatabase
+  urls: urlDatabase,
+  users: req.cookies["username"],
   };
+  console.log(req.cookies["username"])
   res.render("urls_index", templateVars);
 
 });
@@ -122,11 +124,26 @@ app.get("/register", (req, res) => {             //registration page
 //Registration Submission and database update
 app.post("/register", (req,res) => {
   let userID = crypto.randomBytes(3).toString('hex');
-  users.userID = {id: "userID", email: req.body.email,
+  users.userID = {id: "userID", email: req.body.email,  //assign user random userID and create user object based on email and password input from form
     password: req.body.password}
-
   res.cookie('username', userID)
-  res.redirect("/urls");
+
+  if (!(req.body.email && req.body.password)) {    //Error nothing filled in forms
+    res.send("404 no email and/or password provided");
+  }
+  else {
+    res.redirect("/urls");
+  }
+
+  for (var password in users.userID) {                  //Error email is already in database
+    if (user.userID.password === req.body.email) {
+      res.send("404 Email associated with an existing user");
+    }
+    else {
+      res.redirect("/urls");
+    }
+  }
+
 });
 
 
