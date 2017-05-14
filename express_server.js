@@ -15,8 +15,8 @@ app.use(cookieParser())
 
 //Databases
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  rich: {"b2xVn2": "http://www.lighthouselabs.ca"},
+  ron: {"9sm5xK": "http://www.google.com"}
 };
 
 const users = {
@@ -52,7 +52,7 @@ app.get("/urls", (req, res) => {             //main page with database
   };
   console.log(req.cookies["userID"]);
   console.log(users);
-  console.log(users[newID])
+  console.log(urlDatabase)
 
 
   res.render("urls_index", templateVars);
@@ -61,11 +61,20 @@ app.get("/urls", (req, res) => {             //main page with database
 
 //Create
 app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url to shorten
+
+
   let templateVars = {
   userID: req.cookies["userID"],
   urls: urlDatabase
   };
-  res.render("urls_new", templateVars);
+  console.log(req.cookies["userID"])
+  if (req.cookies["userID"] === undefined) {
+ res.redirect("/login")
+
+} else {
+   res.render("urls_new", templateVars);
+
+}
 });
 
 //Take user to long URL if short URL is given
@@ -85,9 +94,11 @@ app.get("/urls/:id", (req, res) => {
 
 //Create
 app.post("/urls", (req, res) => {
-  let shortURL = crypto.randomBytes(3).toString('hex');   // generate 6digit random string asign to shortUrl
-  urlDatabase[shortURL] = req.body.longURL                // add shortUrl : longUrl(submitted in form) to urlDatabase
-  console.log(req.body);                                  // debug statement to see POST parameters
+  let shortURL = crypto.randomBytes(3).toString('hex');
+  createID = req.cookies["userID"]                                              // generate 6digit random string asign to shortUrl
+  urlDatabase[createID] = {shortURL: req.body.longURL }
+                                                      // add shortUrl : longUrl(submitted in form) to urlDatabase
+  console.log(createID);                                  // debug statement to see POST parameters
   res.redirect("/urls");                                  // Redirect user to main page
 });
 
