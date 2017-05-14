@@ -15,9 +15,10 @@ app.use(cookieParser())
 
 //Databases
 var urlDatabase = {
-  rich: {"b2xVn2": "http://www.lighthouselabs.ca"},
-  ron: {"9sm5xK": "http://www.google.com"}
-};
+  "rich": {"b2xVn2": "http://www.lighthouselabs.ca", "userID": "rich"},
+  "ron": {"9sm5xK": "http://www.google.com", "userID": "ron" },
+   };
+
 
 const users = {
   "rich": {
@@ -50,9 +51,9 @@ app.get("/urls", (req, res) => {             //main page with database
   urls: urlDatabase,
   users: stID
   };
-  console.log(req.cookies["userID"]);
-  console.log(users);
-  console.log(urlDatabase)
+ // console.log(req.cookies["userID"]);
+//  console.log(users);
+ // console.log(urlDatabase)
 
 
   res.render("urls_index", templateVars);
@@ -67,7 +68,7 @@ app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url
   userID: req.cookies["userID"],
   urls: urlDatabase
   };
-  console.log(req.cookies["userID"])
+ // console.log(req.cookies["userID"])
   if (req.cookies["userID"] === undefined) {
  res.redirect("/login")
 
@@ -80,7 +81,7 @@ app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url
 //Take user to long URL if short URL is given
 app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take user to correspoding longUrl
   let longURL = urlDatabase[req.params.shortURL];
-  console.log(longURL);
+ // console.log(longURL);
   res.redirect(longURL);
 });
 
@@ -88,7 +89,7 @@ app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take u
 //Retrieve Single URL for update
 app.get("/urls/:id", (req, res) => {
   let singleUrl = urlDatabase[req.params.id];
-  console.log(singleUrl);
+ // console.log(singleUrl);
   res.render("url_show", {shortLong:singleUrl, short:req.params.id});
 });
 
@@ -96,9 +97,13 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {
   let shortURL = crypto.randomBytes(3).toString('hex');
   createID = req.cookies["userID"]                                              // generate 6digit random string asign to shortUrl
-  urlDatabase[createID] = {shortURL: req.body.longURL }
-                                                      // add shortUrl : longUrl(submitted in form) to urlDatabase
-  console.log(createID);                                  // debug statement to see POST parameters
+  urlDatabase[createID] = {shortURL: req.body.longURL, userID: req.cookies["userID"]}                                            // add shortUrl : longUrl(submitted in form) to urlDatabase
+  for (let key in urlDatabase[createID]) {
+    urlDatabase[createID][shortURL] = req.body.longURL
+    delete urlDatabase[createID]["shortURL"];
+  }
+
+  console.log(urlDatabase[createID]);                                  // debug statement to see POST parameters
   res.redirect("/urls");                                  // Redirect user to main page
 });
 
@@ -144,7 +149,7 @@ app.post("/login", (req, res) => {
 
 
 
-  console.log(req.body.email);
+  //console.log(req.body.email);
 
 
 
@@ -179,7 +184,7 @@ app.post("/register", (req,res) => {
 
  //assign user random userID and create user object based on email and password input from form
   users[userID] = {id: userID, email: req.body.email, password: req.body.password}
-  console.log(users.userID);
+  //console.log(users.userID);
 
   res.cookie('userID', userID)
 
