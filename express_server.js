@@ -42,17 +42,19 @@ app.get("/", (req, res) => {
 //Main Page
 app.get("/urls", (req, res) => {             //main page with database
 
-  let ID = [req.cookies["username"]]
+  let ID = [req.cookies["userID"]]
   let newID = ID[0]
-  let stID = JSON.stringify(users[newID])
+  let stID = users[newID]
   let templateVars = {
-  username: req.cookies["username"],
+  userID: req.cookies["userID"],
   urls: urlDatabase,
   users: stID
   };
-  console.log(req.cookies["username"]);
+  console.log(req.cookies["userID"]);
   console.log(users);
-  console.log(stID);
+  console.log(users[newID])
+
+
   res.render("urls_index", templateVars);
 
 });
@@ -60,7 +62,7 @@ app.get("/urls", (req, res) => {             //main page with database
 //Create
 app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url to shorten
   let templateVars = {
-  username: req.cookies["username"],
+  userID: req.cookies["userID"],
   urls: urlDatabase
   };
   res.render("urls_new", templateVars);
@@ -100,7 +102,7 @@ app.post("/urls/:id", (req, res) => {
 //Login GET
 app.get("/login", (req, res) => {
   let templateVars = {
-  username: req.cookies["username"],
+  userID: req.cookies["userID"],
   urls: urlDatabase,
 
   };
@@ -119,8 +121,8 @@ app.post("/login", (req, res) => {
   }
   if (user) {
     if (user.password === req.body.password){
-    let username = crypto.randomBytes(3).toString('hex');
-    res.cookie("username", username)
+    let userID = crypto.randomBytes(3).toString('hex');
+    res.cookie("userID", userID)
     res.redirect("/urls");
     return;
     }
@@ -136,14 +138,14 @@ app.post("/login", (req, res) => {
 
 
 let templateVars = {
-  username: req.cookies["username"],
+  usernID: req.cookies["userID"],
   urls: urlDatabase,
   };
 });
 
 //Logout
 app.get("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("userID");
 
   res.redirect("/urls");
 
@@ -152,7 +154,7 @@ app.get("/logout", (req, res) => {
 //Registration(registration page)
 app.get("/register", (req, res) => {
    let templateVars = {
-  username: req.cookies["username"],
+  userID: req.cookies["userID"],
   urls: urlDatabase,
   users: users
   };
@@ -168,7 +170,7 @@ app.post("/register", (req,res) => {
   users[userID] = {id: userID, email: req.body.email, password: req.body.password}
   console.log(users.userID);
 
-  res.cookie('username', userID)
+  res.cookie('userID', userID)
 
 
 
