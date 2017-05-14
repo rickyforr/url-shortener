@@ -41,12 +41,18 @@ app.get("/", (req, res) => {
 
 //Main Page
 app.get("/urls", (req, res) => {             //main page with database
+
+  let ID = [req.cookies["username"]]
+  let newID = ID[0]
+  let stID = JSON.stringify(users[newID])
   let templateVars = {
   username: req.cookies["username"],
   urls: urlDatabase,
-  users: req.cookies["username"],
+  users: stID
   };
-  console.log(req.cookies["username"])
+  console.log(req.cookies["username"]);
+  console.log(users);
+  console.log(stID);
   res.render("urls_index", templateVars);
 
 });
@@ -91,16 +97,48 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
-//Login
-app.post("/login", (req, res) => {
-  res.cookie('username', req.body.username)
-  console.log(res.cookie)
+//Login GET
+app.get("/login", (req, res) => {
   let templateVars = {
   username: req.cookies["username"],
-  urls: urlDatabase
-};
-  res.redirect("/urls");
+  urls: urlDatabase,
 
+  };
+  res.render("urls_login", templateVars);
+
+});
+
+//Login POST
+app.post("/login", (req, res) => {
+  let user;
+  for (let userID in users) {
+   if (users[userID].email === req.body.email) {
+    user = users[userID]
+    break;
+   }
+  }
+  if (user) {
+    if (user.password === req.body.password){
+    let username = crypto.randomBytes(3).toString('hex');
+    res.cookie("username", username)
+    res.redirect("/urls");
+    return;
+    }
+  }
+  res.status(401).send('email or password incorrect')
+
+
+
+
+
+  console.log(req.body.email);
+
+
+
+let templateVars = {
+  username: req.cookies["username"],
+  urls: urlDatabase,
+  };
 });
 
 //Logout
@@ -111,11 +149,12 @@ app.get("/logout", (req, res) => {
 
 });
 
-//Registration
-app.get("/register", (req, res) => {             //registration page
-  let templateVars = {
+//Registration(registration page)
+app.get("/register", (req, res) => {
+   let templateVars = {
   username: req.cookies["username"],
-  urls: urlDatabase
+  urls: urlDatabase,
+  users: users
   };
   res.render("url_register", templateVars);
 
@@ -123,26 +162,28 @@ app.get("/register", (req, res) => {             //registration page
 
 //Registration Submission and database update
 app.post("/register", (req,res) => {
-  let userID = crypto.randomBytes(3).toString('hex');
-  users.userID = {id: "userID", email: req.body.email,  //assign user random userID and create user object based on email and password input from form
-    password: req.body.password}
+  let userID = (crypto.randomBytes(3).toString('hex'));
+
+ //assign user random userID and create user object based on email and password input from form
+  users[userID] = {id: userID, email: req.body.email, password: req.body.password}
+  console.log(users.userID);
+
   res.cookie('username', userID)
 
-  if (!(req.body.email && req.body.password)) {    //Error nothing filled in forms
-    res.send("404 no email and/or password provided");
-  }
-  else {
-    res.redirect("/urls");
-  }
 
-  for (var password in users.userID) {                  //Error email is already in database
-    if (user.userID.password === req.body.email) {
-      res.send("404 Email associated with an existing user");
-    }
-    else {
+
+//Error email is already in database or nothing filled in forms
+  // for (var password in users.userID) {
+  //   if (users.userID.password === req.body.email) {
+  //     res.send("404 Email associated with an existing user");
+  //   }
+  //   else if (!(req.body.email && req.body.password)) {
+  //   res.send("404 no email and/or password provided");
+  //   }
+  //   else {
       res.redirect("/urls");
-    }
-  }
+  //   }
+  // }
 
 });
 
