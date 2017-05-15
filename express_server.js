@@ -48,13 +48,19 @@ app.get("/urls", (req, res) => {             //main page with database
   let stID = users[newID]
   let templateVars = {
   userID: req.cookies["userID"],
-  urls: urlDatabase,
+  urls: urlDatabase[ID],
   users: stID
   };
  // console.log(req.cookies["userID"]);
 //  console.log(users);
- // console.log(urlDatabase)
+  console.log(urlDatabase)
+ for (var keys in urlDatabase[ID]) {
+    if (urlDatabase[ID][keys] === req.body.longURL ) {
+      delete urlDatabase[ID][keys];
+    }
 
+  }
+//console.log(req.body.shortURL)
 
   res.render("urls_index", templateVars);
 
@@ -80,8 +86,10 @@ app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url
 
 //Take user to long URL if short URL is given
 app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take user to correspoding longUrl
-  let longURL = urlDatabase[req.params.shortURL];
- // console.log(longURL);
+  let ID = req.cookies["userID"];
+  let short = req.params.shortURL
+  let longURL = urlDatabase[ID][short];
+   console.log(longURL);
   res.redirect(longURL);
 });
 
@@ -96,7 +104,7 @@ app.get("/urls/:id", (req, res) => {
   short: req.params.id
   };
 
- console.log(singleUrl);
+// console.log(singleUrl);
   res.render("url_show", templateVars);
 });
 
@@ -117,15 +125,27 @@ app.post("/urls", (req, res) => {
   }
 
 
-  console.log(urlDatabase[createID]);                                  // debug statement to see POST parameters
+ // console.log(urlDatabase[createID]);                                  // debug statement to see POST parameters
   res.redirect("/urls");                                  // Redirect user to main page
 });
 
 //Update
 app.post("/urls/:id", (req, res) => {
-  let currentUser = req.cookies["userID"]
 
-  console.log(req.body.shortUrl)
+ let ID = [req.cookies["userID"]]
+ let short = req.params.id
+ let newShort = req.body.shortURL
+ let long = req.body.longURL
+ for (var key in urlDatabase[ID]) {
+  if (key === short){
+     urlDatabase[ID][newShort] = long
+     delete urlDatabase[ID][short];
+ }
+}
+console.log(req.params.id)
+
+console.log(req.body.shortURL)
+
   res.redirect("/urls");
 });
 
@@ -222,7 +242,8 @@ app.post("/register", (req,res) => {
 
 //Delete URL
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
+  delete urlDatabase[req.cookies["userID"]][req.params.shortURL];
+  console.log(urlDatabase[req.cookies["userID"]])
   res.redirect("/urls");
 });
 
