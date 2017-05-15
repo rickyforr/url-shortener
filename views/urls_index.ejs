@@ -25,11 +25,12 @@
             <h1 style="text-align: center;">urlDatabase</h1>
               <ul>
                  <% for(var i in urls) {%>
-                    <li class="url"> <%= i + " ======> " + urls[i]%>
+                 <% if (i === userID) {%>
+                    <li class="url"> <%= i + " ======> " + JSON.stringify(urls[i])%>
                        <form method="POST" action="/urls/<%= i %>/delete"><button>Delete</button></form>
                           <a class="edit" href="/urls/<%= i %>" style="margin-left: 20px;">Edit</a>
                     </li>
-                        <% } %>
+                        <% } } %>
 
               </ul>
             </div>

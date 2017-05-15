@@ -88,20 +88,34 @@ app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take u
 
 //Retrieve Single URL for update
 app.get("/urls/:id", (req, res) => {
-  let singleUrl = urlDatabase[req.params.id];
- // console.log(singleUrl);
-  res.render("url_show", {shortLong:singleUrl, short:req.params.id});
+  let singleUrl = req.params.id;
+  let createID = req.cookies["userID"]
+  let templateVars = {
+  userID: req.cookies["userID"],
+  urls: urlDatabase[createID],
+  short: req.params.id
+  };
+
+ console.log(singleUrl);
+  res.render("url_show", templateVars);
 });
 
 //Create
 app.post("/urls", (req, res) => {
   let shortURL = crypto.randomBytes(3).toString('hex');
-  createID = req.cookies["userID"]                                              // generate 6digit random string asign to shortUrl
-  urlDatabase[createID] = {shortURL: req.body.longURL, userID: req.cookies["userID"]}                                            // add shortUrl : longUrl(submitted in form) to urlDatabase
-  for (let key in urlDatabase[createID]) {
-    urlDatabase[createID][shortURL] = req.body.longURL
-    delete urlDatabase[createID]["shortURL"];
+  createID = req.cookies["userID"]
+                                               // generate 6digit random string asign to shortUrl
+                                            // add shortUrl : longUrl(submitted in form) to urlDatabase
+
+    if (urlDatabase[createID]) {
+      urlDatabase[createID][shortURL] = req.body.longURL
   }
+  else {
+     urlDatabase[createID] = {[shortURL]: req.body.longURL, userID: req.cookies["userID"]}
+
+
+  }
+
 
   console.log(urlDatabase[createID]);                                  // debug statement to see POST parameters
   res.redirect("/urls");                                  // Redirect user to main page
@@ -109,9 +123,9 @@ app.post("/urls", (req, res) => {
 
 //Update
 app.post("/urls/:id", (req, res) => {
-  let singleUrl = urlDatabase[req.params.id];
-  urlDatabase[req.body.shortURL]= urlDatabase[req.params.id]
-  console.log(urlDatabase[req.body.shortURL])
+  let currentUser = req.cookies["userID"]
+
+  console.log(req.body.shortUrl)
   res.redirect("/urls");
 });
 
