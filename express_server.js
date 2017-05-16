@@ -3,6 +3,8 @@ var express = require("express");
 var app = express();
 var crypto = require("crypto");
 var PORT = process.env.PORT || 8080; // default port 8080
+const bcrypt = require('bcryptjs');
+var cookieSession = require('cookie-session')
 app.set("view engine", "ejs")
 const bodyParser = require("body-parser");
 var cookieParser = require('cookie-parser')
@@ -11,6 +13,10 @@ var cookieParser = require('cookie-parser')
 //Middlewares
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}))
 
 
 //Databases
@@ -36,24 +42,30 @@ const users = {
 
 //Routes
 app.get("/", (req, res) => {
-  res.end("Hello!");
+  if (req.cookies["userID"] === undefined) {
+ res.redirect("/login")
+
+} else {
+  res.redirect("/urls"); }
+
+
 });
 
 
 //Main Page
 app.get("/urls", (req, res) => {             //main page with database
 
-  let ID = [req.cookies["userID"]]
+  let ID = req.session.user_id
   let newID = ID[0]
   let stID = users[newID]
   let templateVars = {
-  userID: req.cookies["userID"],
+  userID: req.session.user_id,
   urls: urlDatabase[ID],
-  users: stID
+  users: users[ID]
   };
  // console.log(req.cookies["userID"]);
-//  console.log(users);
-  console.log(urlDatabase)
+ console.log(ID);
+
  for (var keys in urlDatabase[ID]) {
     if (urlDatabase[ID][keys] === req.body.longURL ) {
       delete urlDatabase[ID][keys];
@@ -61,8 +73,11 @@ app.get("/urls", (req, res) => {             //main page with database
 
   }
 //console.log(req.body.shortURL)
+if (req.session.user_id === undefined) {
+ res.redirect("/login")
 
-  res.render("urls_index", templateVars);
+} else {
+  res.render("urls_index", templateVars); }
 
 });
 
@@ -170,7 +185,7 @@ app.post("/login", (req, res) => {
    }
   }
   if (user) {
-    if (user.password === req.body.password){
+    if (bcrypt.compareSync(req.body.password, user.password)) {
     let userID = crypto.randomBytes(3).toString('hex');
     res.cookie("userID", userID)
     res.redirect("/urls");
@@ -214,13 +229,14 @@ app.get("/register", (req, res) => {
 
 //Registration Submission and database update
 app.post("/register", (req,res) => {
-  let userID = (crypto.randomBytes(3).toString('hex'));
+
+  req.session.user_id = "userID"
+  let userID =  req.session.user_id
 
  //assign user random userID and create user object based on email and password input from form
-  users[userID] = {id: userID, email: req.body.email, password: req.body.password}
-  //console.log(users.userID);
+  users[userID] = {id: userID, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10)}
+  console.log(users);
 
-  res.cookie('userID', userID)
 
 
 

@@ -12,10 +12,10 @@
 
 
 <% if (userID == null) {%>
-
+<a href="/login">Login</a>
 
 <%} else {%>
-<p><%= userID %></p>
+<p><%= users.email %></p>
   <form class="login" action="/logout" method="GET" >
   <input class="logout" type="submit" value="Logout">
   </form>
