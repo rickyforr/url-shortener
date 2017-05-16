@@ -42,7 +42,7 @@ const users = {
 
 //Routes
 app.get("/", (req, res) => {
-  if (req.cookies["userID"] === undefined) {
+  if (req.session.user_id === undefined) {
  res.redirect("/login")
 
 } else {
@@ -56,15 +56,15 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {             //main page with database
 
   let ID = req.session.user_id
-  let newID = ID[0]
-  let stID = users[newID]
+
+
   let templateVars = {
   userID: req.session.user_id,
   urls: urlDatabase[ID],
   users: users[ID]
   };
  // console.log(req.cookies["userID"]);
- console.log(ID);
+ console.log(req.session.user_id);
 
  for (var keys in urlDatabase[ID]) {
     if (urlDatabase[ID][keys] === req.body.longURL ) {
@@ -72,12 +72,8 @@ app.get("/urls", (req, res) => {             //main page with database
     }
 
   }
-//console.log(req.body.shortURL)
-if (req.session.user_id === undefined) {
- res.redirect("/login")
 
-} else {
-  res.render("urls_index", templateVars); }
+  res.render("urls_index", templateVars);
 
 });
 
@@ -85,12 +81,17 @@ if (req.session.user_id === undefined) {
 app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url to shorten
 
 
+
+  let ID = req.session.user_id
+
+
   let templateVars = {
-  userID: req.cookies["userID"],
-  urls: urlDatabase
+  userID: req.session.user_id,
+  urls: urlDatabase[ID],
+  users: users[ID]
   };
  // console.log(req.cookies["userID"])
-  if (req.cookies["userID"] === undefined) {
+  if (req.session.user_id === undefined) {
  res.redirect("/login")
 
 } else {
@@ -101,7 +102,7 @@ app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url
 
 //Take user to long URL if short URL is given
 app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take user to correspoding longUrl
-  let ID = req.cookies["userID"];
+  let ID = req.session.user_id;
   let short = req.params.shortURL
   let longURL = urlDatabase[ID][short];
    console.log(longURL);
@@ -112,11 +113,13 @@ app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take u
 //Retrieve Single URL for update
 app.get("/urls/:id", (req, res) => {
   let singleUrl = req.params.id;
-  let createID = req.cookies["userID"]
+  let createID = req.session.user_id
+
   let templateVars = {
-  userID: req.cookies["userID"],
+  userID: req.session.user_id,
   urls: urlDatabase[createID],
-  short: req.params.id
+  short: req.params.id,
+  users: users[createID]
   };
 
 // console.log(singleUrl);
@@ -126,7 +129,7 @@ app.get("/urls/:id", (req, res) => {
 //Create
 app.post("/urls", (req, res) => {
   let shortURL = crypto.randomBytes(3).toString('hex');
-  createID = req.cookies["userID"]
+  createID = req.session.user_id
                                                // generate 6digit random string asign to shortUrl
                                             // add shortUrl : longUrl(submitted in form) to urlDatabase
 
@@ -134,7 +137,7 @@ app.post("/urls", (req, res) => {
       urlDatabase[createID][shortURL] = req.body.longURL
   }
   else {
-     urlDatabase[createID] = {[shortURL]: req.body.longURL, userID: req.cookies["userID"]}
+     urlDatabase[createID] = {[shortURL]: req.body.longURL, userID: req.session_id}
 
 
   }
@@ -147,7 +150,7 @@ app.post("/urls", (req, res) => {
 //Update
 app.post("/urls/:id", (req, res) => {
 
- let ID = [req.cookies["userID"]]
+ let ID = req.session.user_id
  let short = req.params.id
  let newShort = req.body.shortURL
  let long = req.body.longURL
@@ -167,7 +170,7 @@ console.log(req.body.shortURL)
 //Login GET
 app.get("/login", (req, res) => {
   let templateVars = {
-  userID: req.cookies["userID"],
+  userID: req.session.user_id,
   urls: urlDatabase,
 
   };
@@ -187,7 +190,7 @@ app.post("/login", (req, res) => {
   if (user) {
     if (bcrypt.compareSync(req.body.password, user.password)) {
     let userID = crypto.randomBytes(3).toString('hex');
-    res.cookie("userID", userID)
+    req.session.user_id = "userID"
     res.redirect("/urls");
     return;
     }
@@ -203,14 +206,14 @@ app.post("/login", (req, res) => {
 
 
 let templateVars = {
-  usernID: req.cookies["userID"],
+  usernID: req.session.user_id,
   urls: urlDatabase,
   };
 });
 
 //Logout
 app.get("/logout", (req, res) => {
-  res.clearCookie("userID");
+  req.session = null
 
   res.redirect("/urls");
 
@@ -219,7 +222,7 @@ app.get("/logout", (req, res) => {
 //Registration(registration page)
 app.get("/register", (req, res) => {
    let templateVars = {
-  userID: req.cookies["userID"],
+  userID: req.session.user_id,
   urls: urlDatabase,
   users: users
   };
@@ -230,7 +233,7 @@ app.get("/register", (req, res) => {
 //Registration Submission and database update
 app.post("/register", (req,res) => {
 
-  req.session.user_id = "userID"
+  req.session.user_id = "newUser"
   let userID =  req.session.user_id
 
  //assign user random userID and create user object based on email and password input from form
@@ -258,8 +261,8 @@ app.post("/register", (req,res) => {
 
 //Delete URL
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.cookies["userID"]][req.params.shortURL];
-  console.log(urlDatabase[req.cookies["userID"]])
+  delete urlDatabase[req.session.user_id][req.params.shortURL];
+  console.log(urlDatabase[req.session.user_id])
   res.redirect("/urls");
 });
 
