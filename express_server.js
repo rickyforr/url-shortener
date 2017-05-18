@@ -5,7 +5,7 @@ var crypto = require("crypto");
 var PORT = process.env.PORT || 8080; // default port 8080
 const bcrypt = require('bcryptjs');
 var cookieSession = require('cookie-session')
-app.set("view engine", "ejs")
+app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 var cookieParser = require('cookie-parser')
 
@@ -41,71 +41,65 @@ const users = {
 
 
 //Routes
+//----------------------------------------
+//Home
 app.get("/", (req, res) => {
-  if (req.session.user_id === undefined) {
+ if (req.session.user_id === undefined) {
  res.redirect("/login")
 
 } else {
   res.redirect("/urls"); }
-
-
 });
 
 
-//Main Page
-app.get("/urls", (req, res) => {             //main page with database
+//Main Page with short and long urls displayed for logged in users
+app.get("/urls", (req, res) => {
 
-  let ID = req.session.user_id
-
+  let ID = req.session.user_id;
 
   let templateVars = {
   userID: req.session.user_id,
   urls: urlDatabase[ID],
   users: users[ID]
   };
- // console.log(req.cookies["userID"]);
- console.log(req.session.user_id);
 
+
+//Delete old short url/long url pair if a new one has been made
  for (var keys in urlDatabase[ID]) {
     if (urlDatabase[ID][keys] === req.body.longURL ) {
       delete urlDatabase[ID][keys];
     }
-
-  }
+ }
 
   res.render("urls_index", templateVars);
 
 });
 
-//Create
-app.get("/urls/new", (req, res) => {  //sends user to form to enter new long url to shorten
+//Create GET - takes user to page where they can enter a new long url to shorten
+app.get("/urls/new", (req, res) => {
 
-
-
-  let ID = req.session.user_id
-
-
+  let ID = req.session.user_id;
   let templateVars = {
   userID: req.session.user_id,
   urls: urlDatabase[ID],
   users: users[ID]
   };
- // console.log(req.cookies["userID"])
+
+//If user is not logged in redirect to login page
   if (req.session.user_id === undefined) {
- res.redirect("/login")
+   res.redirect("/login")
 
-} else {
+   } else {
    res.render("urls_new", templateVars);
-
-}
+  }
 });
 
 //Take user to long URL if short URL is given
-app.get('/u/:shortURL', (req, res) => {  //if short url is put in browser take user to correspoding longUrl
+app.get('/u/:shortURL', (req, res) => {
   let ID = req.session.user_id;
   let short = req.params.shortURL
   let longURL = urlDatabase[ID][short];
-   console.log(longURL);
+
   res.redirect(longURL);
 });
 
@@ -122,52 +116,47 @@ app.get("/urls/:id", (req, res) => {
   users: users[createID]
   };
 
-// console.log(singleUrl);
+
   res.render("url_show", templateVars);
 });
 
-//Create
+//Create POST. Creates a new shortened url.
 app.post("/urls", (req, res) => {
+
+  // generate 6digit random string asign to shortUrl
   let shortURL = crypto.randomBytes(3).toString('hex');
   createID = req.session.user_id
-                                               // generate 6digit random string asign to shortUrl
-                                            // add shortUrl : longUrl(submitted in form) to urlDatabase
 
-    if (urlDatabase[createID]) {
+  // add shortUrl : longUrl(submitted in form) pair to urlDatabase. if user is new create a new object within the database with the userID as well
+  if (urlDatabase[createID]) {
       urlDatabase[createID][shortURL] = req.body.longURL
-  }
-  else {
+  } else {
      urlDatabase[createID] = {[shortURL]: req.body.longURL, userID: req.session_id}
-
-
   }
-
-
- // console.log(urlDatabase[createID]);                                  // debug statement to see POST parameters
-  res.redirect("/urls");                                  // Redirect user to main page
+  // Redirect user to main page
+  res.redirect("/urls");
 });
 
-//Update
+//Update POST. update an existing shor:long url pair in the database
 app.post("/urls/:id", (req, res) => {
 
  let ID = req.session.user_id
  let short = req.params.id
  let newShort = req.body.shortURL
- let long = req.body.longURL
+ let long = urlDatabase[ID][short]
+console.log(urlDatabase[ID][short])
  for (var key in urlDatabase[ID]) {
   if (key === short){
      urlDatabase[ID][newShort] = long
      delete urlDatabase[ID][short];
  }
 }
-console.log(req.params.id)
 
-console.log(req.body.shortURL)
 
   res.redirect("/urls");
 });
 
-//Login GET
+//Login GET. Render login page.
 app.get("/login", (req, res) => {
   let templateVars = {
   userID: req.session.user_id,
@@ -178,48 +167,44 @@ app.get("/login", (req, res) => {
 
 });
 
-//Login POST
-app.post("/login", (req, res) => {
-  let user;
-  for (let userID in users) {
-   if (users[userID].email === req.body.email) {
-    user = users[userID]
-    break;
-   }
-  }
-  if (user) {
-    if (bcrypt.compareSync(req.body.password, user.password)) {
-    let userID = crypto.randomBytes(3).toString('hex');
-    req.session.user_id = "userID"
-    res.redirect("/urls");
-    return;
-    }
-  }
-  res.status(401).send('email or password incorrect')
 
-
-
-
-
-  //console.log(req.body.email);
-
-
-
-let templateVars = {
-  usernID: req.session.user_id,
-  urls: urlDatabase,
-  };
-});
-
-//Logout
+//Logout. Clear cookies.
 app.get("/logout", (req, res) => {
   req.session = null
-
   res.redirect("/urls");
 
 });
 
-//Registration(registration page)
+//Login POST
+app.post("/login", (req, res) => {
+ let userID;
+
+for (var i in users) {
+  if (users[i].email === req.body.email) {
+  userID = i
+  break;
+  }
+}
+//if password hashed matches hashed password in the database give a cookie and redirect to /urls
+ if (userID) {
+
+  if (bcrypt.compareSync(req.body.password, users[userID].password)) {
+
+  req.session.user_id = userID
+  res.redirect("/urls");
+  return;
+ }
+
+
+}
+res.status(401).send('wrong email or password')
+
+
+
+});
+
+
+//Registration GET. Take user to registration page.
 app.get("/register", (req, res) => {
    let templateVars = {
   userID: req.session.user_id,
@@ -230,45 +215,38 @@ app.get("/register", (req, res) => {
 
 });
 
-//Registration Submission and database update
+//Registration POST. User enters email and password. user database is updated and user is redirected to /urls
 app.post("/register", (req,res) => {
 
-  req.session.user_id = "newUser"
-  let userID =  req.session.user_id
+  for (var name in users) {
 
- //assign user random userID and create user object based on email and password input from form
-  users[userID] = {id: userID, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10)}
-  console.log(users);
-
-
+    if (users[name].email === req.body.email) {
+      res.send("404 email belongs to a user")
+    }
+  }
 
 
-//Error email is already in database or nothing filled in forms
-  // for (var password in users.userID) {
-  //   if (users.userID.password === req.body.email) {
-  //     res.send("404 Email associated with an existing user");
-  //   }
-  //   else if (!(req.body.email && req.body.password)) {
-  //   res.send("404 no email and/or password provided");
-  //   }
-  //   else {
-      res.redirect("/urls");
-  //   }
-  // }
-
+//Error if email is already in database or nothing filled in forms
+  if (!(req.body.email && req.body.password)) {
+    res.send("404 no email and/or password provided");
+    } else {
+        req.session.user_id = crypto.randomBytes(3).toString('hex');
+        let userID =  req.session.user_id
+        users[userID] = {id: userID, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10)}
+        res.redirect("/urls");
+      }
 });
 
 
 //Delete URL
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.session.user_id][req.params.shortURL];
-  console.log(urlDatabase[req.session.user_id])
   res.redirect("/urls");
 });
 
 //Listen
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`Tiny app listening on port ${PORT}!`);
 });
 
 

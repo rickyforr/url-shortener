@@ -11,18 +11,16 @@
     <header><% include ./partials/_header %></header>
 
 <body>
-  <ul>
-    <li><%= urls[short] %> </li>
-    <li> </li>
-  </ul>
+
+    <h3><%= urls[short] %> </h3>
+
+
 
   <form action="/urls/<%= short %> " method="POST" style="margin:150px;">
       <label for="shortURL">Short URL:</label>
       <input id="shortURL" type="text" name="shortURL"  style="width: 300px">
-      <label for="longURL">Long URL:</label>
-      <input id="longURL" type="text" name="longURL"  style="width: 300px">
       <input type="submit" value="Update Url">
     </form>
 
 </body>
-</html>s
+</html>
