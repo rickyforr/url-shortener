@@ -4,9 +4,6 @@
     <title>URLSHOWS</title>
 
   <style type="text/css">
-
-
-
   </style>
 
   </head>
@@ -14,16 +11,16 @@
     <header><% include ./partials/_header %></header>
 
 <body>
-  <ul>
-    <li> <%= short %></li>
-    <li> <%= shortLong %></li>
-  </ul>
-  <form action="/urls/<%= short %>" method="POST" style="margin:150px;">
-      <label for="longURL">Short URL:</label>
+
+    <h3><%= urls[short] %> </h3>
+
+
+
+  <form action="/urls/<%= short %> " method="POST" style="margin:150px;">
+      <label for="shortURL">Short URL:</label>
       <input id="shortURL" type="text" name="shortURL"  style="width: 300px">
       <input type="submit" value="Update Url">
     </form>
-
 
 </body>
 </html>

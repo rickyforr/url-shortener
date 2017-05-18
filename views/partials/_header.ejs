@@ -1,4 +1,7 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+</head>
 <body >
   <nav>
     <a href=http://localhost:8080/urls/new>Shorten URL</a>
@@ -8,23 +11,15 @@
 
 
 
-<% if (username == null) {%>
-
-
-    <form class="login" action="/login" method="POST" >
-      <input id="username" type="text" name="username" style="width: 300px">
-      <input class="login" type="submit" value="Login">
-
-    </form>
+<% if (userID == null) {%>
+<a href="/login">Login</a>
+<a href="/register">Register</a>
 
 <%} else {%>
-
-<p><%= username %></p>
-<form class="login" action="/logout" method="GET" >
-
-      <input class="logout" type="submit" value="Logout">
-
-    </form>
+<p><%= users.email %></p>
+  <form class="login" action="/logout" method="GET" >
+  <input class="logout" type="submit" value="Logout">
+  </form>
 <% } %>
 
 </body>
