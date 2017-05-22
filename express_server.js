@@ -44,11 +44,13 @@ const users = {
 //----------------------------------------
 //Home
 app.get("/", (req, res) => {
- if (req.session.user_id === undefined) {
- res.redirect("/login")
 
-} else {
-  res.redirect("/urls"); }
+  if (req.session.user_id) {
+    res.redirect("/urls")
+  } else {
+    res.redirect("/login")
+  }
+
 });
 
 
@@ -96,11 +98,22 @@ app.get("/urls/new", (req, res) => {
 
 //Take user to long URL if short URL is given
 app.get('/u/:shortURL', (req, res) => {
-  let ID = req.session.user_id;
-  let short = req.params.shortURL
-  let longURL = urlDatabase[ID][short];
 
-  res.redirect(longURL);
+  let short = req.params.shortURL
+  let longURL;
+
+  for (user in urlDatabase) {
+    if (longURL = urlDatabase[user][short]) {
+
+   res.redirect(longURL);
+  } else {
+      res.send('Error url does not exist')
+    }
+  }
+
+console.log(longURL)
+
+
 });
 
 
@@ -206,7 +219,8 @@ res.status(401).send('wrong email or password')
 
 //Registration GET. Take user to registration page.
 app.get("/register", (req, res) => {
-   let templateVars = {
+
+  let templateVars = {
   userID: req.session.user_id,
   urls: urlDatabase,
   users: users
@@ -218,8 +232,7 @@ app.get("/register", (req, res) => {
 //Registration POST. User enters email and password. user database is updated and user is redirected to /urls
 app.post("/register", (req,res) => {
 
-  for (var name in users) {
-
+  for (let name in users) {
     if (users[name].email === req.body.email) {
       res.send("404 email belongs to a user")
     }
