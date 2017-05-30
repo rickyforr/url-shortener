@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
 
 //Main Page with short and long urls displayed for logged in users
 app.get("/urls", (req, res) => {
-
+  console.log(users);
   let ID = req.session.user_id;
 
   let templateVars = {
@@ -94,47 +94,51 @@ app.get("/urls/new", (req, res) => {
   }
 });
 
-//Take user to long URL if short URL is given
+//REDIRECT USER TO LONG URL
 app.get('/u/:shortURL', (req, res) => {
-  let ID = req.session.user_id;
-  let short = req.params.shortURL
-  let longURL = urlDatabase[ID][short];
 
-  res.redirect(longURL);
+  let short = req.params.shortURL
+  let longURL;
+
+  for (var user in urlDatabase) {
+    longURL = urlDatabase[user].short
+    if (longURL) {
+       console.log(longURL)
+       res.redirect(longURL);
+    } else {
+      res.send('Error url does not exist')
+    }
+
+   }
+
 });
 
 
-//Retrieve Single URL for update
+//RETRIEVE A SINGLE URL FOR UPDATE
 app.get("/urls/:id", (req, res) => {
-  let singleUrl = req.params.id;
-  let createID = req.session.user_id
+  let shortUrl = req.params.id;
+  let userId = req.session.user_id
 
   let templateVars = {
   userID: req.session.user_id,
-  urls: urlDatabase[createID],
+  urls: urlDatabase[userId],
   short: req.params.id,
-  users: users[createID]
+  users: users[userId]
   };
+  console.log(shortUrl)
+  console.log(userId)
 
-
-  res.render("url_show", templateVars);
-});
-
-//Create POST. Creates a new shortened url.
-app.post("/urls", (req, res) => {
-
-  // generate 6digit random string asign to shortUrl
-  let shortURL = crypto.randomBytes(3).toString('hex');
-  createID = req.session.user_id
-
-  // add shortUrl : longUrl(submitted in form) pair to urlDatabase. if user is new create a new object within the database with the userID as well
-  if (urlDatabase[createID]) {
-      urlDatabase[createID][shortURL] = req.body.longURL
+//if user is logged in allow them to update links in their database otherwise send error message
+  if (!userId) {
+        res.status(401).send("You need to be logged in to view this page. <a href='/login'>Login</a>");
   } else {
-     urlDatabase[createID] = {[shortURL]: req.body.longURL, userID: req.session_id}
+      if (!urlDatabase[userId] || !urlDatabase[userId][shortUrl]) {
+        res.status(401).send("You do not own this short url!");
+      } else {
+
+    res.render("url_show", templateVars);
+      }
   }
-  // Redirect user to main page
-  res.redirect("/urls");
 });
 
 //Update POST. update an existing shor:long url pair in the database
@@ -155,6 +159,25 @@ console.log(urlDatabase[ID][short])
 
   res.redirect("/urls");
 });
+
+//Create POST. Creates a new shortened url.
+app.post("/urls", (req, res) => {
+
+  // generate 6digit random string asign to shortUrl
+  let shortURL = crypto.randomBytes(3).toString('hex');
+  createID = req.session.user_id
+
+  // add shortUrl : longUrl(submitted in form) pair to urlDatabase. if user is new create a new object within the database with the userID as well
+  if (urlDatabase[createID]) {
+      urlDatabase[createID][shortURL] = req.body.longURL
+  } else {
+     urlDatabase[createID] = {[shortURL]: req.body.longURL, userID: req.session_id}
+  }
+  // Redirect user to main page
+  res.redirect("/urls");
+});
+
+
 
 //Login GET. Render login page.
 app.get("/login", (req, res) => {
@@ -185,6 +208,7 @@ for (var i in users) {
   break;
   }
 }
+console.log(userID)
 //if password hashed matches hashed password in the database give a cookie and redirect to /urls
  if (userID) {
 
@@ -219,13 +243,10 @@ app.get("/register", (req, res) => {
 app.post("/register", (req,res) => {
 
   for (var name in users) {
-
     if (users[name].email === req.body.email) {
       res.send("404 email belongs to a user")
     }
   }
-
-
 //Error if email is already in database or nothing filled in forms
   if (!(req.body.email && req.body.password)) {
     res.send("404 no email and/or password provided");
@@ -233,6 +254,7 @@ app.post("/register", (req,res) => {
         req.session.user_id = crypto.randomBytes(3).toString('hex');
         let userID =  req.session.user_id
         users[userID] = {id: userID, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10)}
+
         res.redirect("/urls");
       }
 });
