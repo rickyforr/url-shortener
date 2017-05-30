@@ -1,28 +1,99 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+<style>
+
+ body {
+    margin: 0px;
+  }
+
+  nav {
+     background: linear-gradient(black, #2a252b);
+     position: fixed;
+     width: 100%;
+     top: 0;
+     height: 120px;
+  }
+
+  p.user {
+    color: white;
+    font-family: sans-serif;
+    font-size: 15px;
+    margin-left: 5px;
+  }
+
+  a {
+    float: right;
+    color: white;
+    font-family: sans-serif;
+  }
+
+  .logout {
+    border-style: solid;
+    border-color: white;
+    border-radius: 20px;
+    background-color: transparent;
+    color: white;
+    margin-left: 5px;
+    margin-bottom: 10px;
+  }
+
+  .logout:hover {
+    background-color: white;
+    color: black;
+  }
+
+  h1 {
+    margin-top: 120px;
+    font-family: sans-serif;
+  }
+
+  .edit {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 20px;
+    float: left;
+  }
+
+  .delete {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 20px;
+  }
+
+  .urls {
+    width: 350px;
+  }
+
+</style>
 </head>
+
 <body >
+
   <nav>
     <a href=http://localhost:8080/urls/new>Shorten URL</a>
     <br>
-     <a href="http://localhost:8080/urls">Url Database</a>
+    <a href="http://localhost:8080/urls">Url Database</a>
+
+    <% if (userID == null) {%>
+      <br>
+      <a href="/login">Login</a>
+      <br>
+      <a href="/register">Register</a>
+
+    <%} else {%>
+    <p class='user'>Logged in with: <%= users.email %></p>
+    <form class="login" action="/logout" method="GET" >
+    <input class="logout" type="submit" value="Logout">
+    </form>
+    <% } %>
   </nav>
 
-
-
-<% if (userID == null) {%>
-<a href="/login">Login</a>
-<a href="/register">Register</a>
-
-<%} else {%>
-<p><%= users.email %></p>
-  <form class="login" action="/logout" method="GET" >
-  <input class="logout" type="submit" value="Logout">
-  </form>
-<% } %>
-
 </body>
+
 </html>
 
 

@@ -64,14 +64,18 @@ app.get("/urls", (req, res) => {
   };
 
 
+
+
 //Delete old short url/long url pair if a new one has been made
- for (var keys in urlDatabase[ID]) {
+  for (var keys in urlDatabase[ID]) {
     if (urlDatabase[ID][keys] === req.body.longURL ) {
       delete urlDatabase[ID][keys];
     }
- }
+  }
 
-  res.render("urls_index", templateVars);
+res.render("urls_index", templateVars);
+
+
 
 });
 
@@ -99,17 +103,19 @@ app.get('/u/:shortURL', (req, res) => {
 
   let short = req.params.shortURL
   let longURL;
+   console.log(short)
+   console.log(urlDatabase)
 
-  for (var user in urlDatabase) {
-    longURL = urlDatabase[user].short
-    if (longURL) {
-       console.log(longURL)
-       res.redirect(longURL);
-    } else {
-      res.send('Error url does not exist')
+  for (var i in urlDatabase) {
+    console.log(urlDatabase[i][short])
+    if (urlDatabase[i][short]) {
+      let longURL = urlDatabase[i][short]
+      res.redirect(longURL)
     }
-
-   }
+  }
+  if (!urlDatabase[i][short]) {
+    res.status(404).send('url not found.')
+  }
 
 });
 
