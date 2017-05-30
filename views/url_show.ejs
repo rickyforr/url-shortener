@@ -12,13 +12,10 @@
 
 <body>
 
-    <h3><%= urls[short] %> </h3>
-
-
 
   <form action="/urls/<%= short %> " method="POST" style="margin:150px;">
-      <label for="shortURL">Short URL:</label>
-      <input id="shortURL" type="text" name="shortURL"  style="width: 300px">
+      <label for="shortURL"><%= shortUrl %></label>
+      <input id="longUrl" type="text" name="longUrl"  style="width: 300px">
       <input type="submit" value="Update Url">
     </form>
 

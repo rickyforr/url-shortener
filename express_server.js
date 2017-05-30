@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
 
 //Main Page with short and long urls displayed for logged in users
 app.get("/urls", (req, res) => {
-  console.log(users);
+
   let ID = req.session.user_id;
 
   let templateVars = {
@@ -124,7 +124,7 @@ app.get("/urls/:id", (req, res) => {
 
   let templateVars = {
   userID: req.session.user_id,
-  urls: urlDatabase[userId],
+  shortUrl: shortUrl,
   short: req.params.id,
   users: users[userId]
   };
@@ -149,12 +149,12 @@ app.post("/urls/:id", (req, res) => {
  let ID = req.session.user_id
  let short = req.params.id
  let newShort = req.body.shortURL
- let long = urlDatabase[ID][short]
+ let newLong = req.body.longUrl
 
  for (var key in urlDatabase[ID]) {
   if (key === short){
-     urlDatabase[ID][newShort] = long
-     delete urlDatabase[ID][short];
+     urlDatabase[ID][short] = newLong
+
  }
 }
 
