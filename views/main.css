@@ -1,0 +1,44 @@
+ body {
+    margin: 0px;
+  }
+
+  nav {
+     background: linear-gradient(black, #2a252b);
+     position: fixed;
+     width: 100%;
+     top: 0;
+     height: 120px;
+
+  }
+
+  p.user {
+    color: white;
+    font-family: sans-serif;
+    font-size: 15px;
+    margin-left: 5px;
+   }
+
+  a {
+    float: right;
+    color: white;
+    font-family: sans-serif;
+  }
+
+  .logout {
+    border-style: solid;
+    border-color: white;
+    border-radius: 20px;
+    background-color: transparent;
+    color: white;
+    margin-left: 5px;
+    margin-bottom: 10px;
+  }
+  .logout:hover {
+    background-color: white;
+    color: black;
+  }
+  h1 {
+    margin-top: 120px;
+    font-family: sans-serif;
+  }
+

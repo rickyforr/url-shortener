@@ -4,13 +4,6 @@
 
   <title>TinyApp</title>
 
-<style type="text/css">
- li.url {
-  margin:10px 10px 100px 10px;
-
- }
-
-</style>
 
 </head>
    <body>
@@ -18,17 +11,13 @@
      <header>
      <% include ./partials/_header %>
      </header>
-
-
-
-           <div>
-            <h1 style="text-align: center;">urlDatabase</h1>
+       <h1 style="text-align: center;">urlDatabase</h1>
+           <div class='urls'>
               <ul>
                  <% for(var i in urls) {%>
-
                     <li class="url"> <%= [i] + " ======> " + JSON.stringify(urls[i])%>
-                       <form method="POST" action="/urls/<%= [i] %>/delete"><button>Delete</button></form>
-                          <a class="edit" href="/urls/<%= [i] %>" style="margin-left: 20px;">Edit</a>
+                       <form method="POST" action="/urls/<%= [i] %>/delete"><button class='delete'>Delete</button></form>
+                          <a class="edit" href="/urls/<%= [i] %>">Edit</a>
                     </li>
                         <% }  %>
 
