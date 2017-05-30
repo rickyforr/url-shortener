@@ -103,11 +103,8 @@ app.get('/u/:shortURL', (req, res) => {
 
   let short = req.params.shortURL
   let longURL;
-   console.log(short)
-   console.log(urlDatabase)
 
   for (var i in urlDatabase) {
-    console.log(urlDatabase[i][short])
     if (urlDatabase[i][short]) {
       let longURL = urlDatabase[i][short]
       res.redirect(longURL)
@@ -131,8 +128,7 @@ app.get("/urls/:id", (req, res) => {
   short: req.params.id,
   users: users[userId]
   };
-  console.log(shortUrl)
-  console.log(userId)
+
 
 //if user is logged in allow them to update links in their database otherwise send error message
   if (!userId) {
@@ -154,7 +150,7 @@ app.post("/urls/:id", (req, res) => {
  let short = req.params.id
  let newShort = req.body.shortURL
  let long = urlDatabase[ID][short]
-console.log(urlDatabase[ID][short])
+
  for (var key in urlDatabase[ID]) {
   if (key === short){
      urlDatabase[ID][newShort] = long
@@ -214,7 +210,7 @@ for (var i in users) {
   break;
   }
 }
-console.log(userID)
+
 //if password hashed matches hashed password in the database give a cookie and redirect to /urls
  if (userID) {
 
