@@ -2,18 +2,23 @@
  <html>
 
   <head>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   </head>
 
     <body>
+      <header>
+     <% include ./partials/_header %>
+     </header>
 
      <h1 style='text-align: center;'>Register</h1>
 
-      <form action="/register" method="POST" style="margin:150px;">
+      <form class="w3-container w3-card-4 w3-light-grey" action="/register" method="POST" style="margin:150px;">
       <label for="register">Email:</label>
-      <input id="email" type="email" name="email" placeholder="john@smith.com" style="width: 300px">
+      <input class="w3-input w3-border" id="email" type="email" name="email" placeholder="john@smith.com" style="width: 300px">
+      <br>
       <label for="register">Password:</label>
-      <input id="password" type="password" name="password" style="width: 300px">
-      <input class="submit" type="submit" value="Register!">
+      <input class="w3-input w3-border" id="password" type="password" name="password" style="width: 300px">
+      <input class="w3-button w3-black" type="submit" value="Register!">
       </form>
 
     </body>

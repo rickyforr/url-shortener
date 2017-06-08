@@ -10,7 +10,10 @@ const bodyParser = require("body-parser");
 var cookieParser = require('cookie-parser')
 
 
+
+
 //Middlewares
+app.use("/styles", express.static(__dirname + '/styles'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 app.use(cookieSession({
@@ -54,53 +57,39 @@ app.get("/", (req, res) => {
 
 //Main Page with short and long urls displayed for logged in users
 app.get("/urls", (req, res) => {
-
   let ID = req.session.user_id;
-
   let templateVars = {
   userID: req.session.user_id,
   urls: urlDatabase[ID],
   users: users[ID]
   };
-
-
-
-
 //Delete old short url/long url pair if a new one has been made
   for (var keys in urlDatabase[ID]) {
     if (urlDatabase[ID][keys] === req.body.longURL ) {
       delete urlDatabase[ID][keys];
     }
   }
-
 res.render("urls_index", templateVars);
-
-
-
 });
 
 //Create GET - takes user to page where they can enter a new long url to shorten
 app.get("/urls/new", (req, res) => {
-
   let ID = req.session.user_id;
   let templateVars = {
   userID: req.session.user_id,
   urls: urlDatabase[ID],
   users: users[ID]
   };
-
 //If user is not logged in redirect to login page
   if (req.session.user_id === undefined) {
    res.redirect("/login")
-
-   } else {
-   res.render("urls_new", templateVars);
-  }
+  } else {
+      res.render("urls_new", templateVars);
+    }
 });
 
 //REDIRECT USER TO LONG URL
 app.get('/u/:shortURL', (req, res) => {
-
   let short = req.params.shortURL
   let longURL;
 
@@ -113,7 +102,6 @@ app.get('/u/:shortURL', (req, res) => {
   if (!urlDatabase[i][short]) {
     res.status(404).send('url not found.')
   }
-
 });
 
 
@@ -121,15 +109,12 @@ app.get('/u/:shortURL', (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let shortUrl = req.params.id;
   let userId = req.session.user_id
-
   let templateVars = {
   userID: req.session.user_id,
   shortUrl: shortUrl,
   short: req.params.id,
   users: users[userId]
   };
-
-
 //if user is logged in allow them to update links in their database otherwise send error message
   if (!userId) {
         res.status(401).send("You need to be logged in to view this page. <a href='/login'>Login</a>");
@@ -137,45 +122,35 @@ app.get("/urls/:id", (req, res) => {
       if (!urlDatabase[userId] || !urlDatabase[userId][shortUrl]) {
         res.status(401).send("You do not own this short url!");
       } else {
-
-    res.render("url_show", templateVars);
-      }
-  }
+          res.render("url_show", templateVars);
+        }
+    }
 });
 
 //Update POST. update an existing shor:long url pair in the database
 app.post("/urls/:id", (req, res) => {
-
  let ID = req.session.user_id
  let short = req.params.id
  let newShort = req.body.shortURL
  let newLong = req.body.longUrl
-
  for (var key in urlDatabase[ID]) {
-  if (key === short){
+   if (key === short) {
      urlDatabase[ID][short] = newLong
-
- }
-}
-
-
+    }
+  }
   res.redirect("/urls");
 });
 
 //Create POST. Creates a new shortened url.
 app.post("/urls", (req, res) => {
-
-  // generate 6digit random string asign to shortUrl
   let shortURL = crypto.randomBytes(3).toString('hex');
   createID = req.session.user_id
-
   // add shortUrl : longUrl(submitted in form) pair to urlDatabase. if user is new create a new object within the database with the userID as well
   if (urlDatabase[createID]) {
       urlDatabase[createID][shortURL] = req.body.longURL
   } else {
      urlDatabase[createID] = {[shortURL]: req.body.longURL, userID: req.session_id}
-  }
-  // Redirect user to main page
+    }
   res.redirect("/urls");
 });
 
