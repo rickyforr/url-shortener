@@ -8,16 +8,18 @@
      <% include ./partials/_header %>
      </header>
     <h1 style="text-align: center;">urlDatabase</h1>
-      <div class='urls'>
-        <ul>
-         <% for(var i in urls) {%>
-            <li class="url"> <%= [i] + " ======> " + JSON.stringify(urls[i])%>
-               <a class="w3-button w3-black" href="/urls/<%= [i] %>">Edit</a>
-               <form method="POST" action="/urls/<%= [i] %>/delete"><button class="w3-button w3-black">Delete</button></form>
+      <% for(var i in urls) {%>
+      <div class="w3-container">
+      <div class="w3-card-4" style="width: 500px; margin: 10px;">
+
+            <div class="w3-container w3-light-grey"> <%= [i] + ": " + JSON.stringify(urls[i])%></div>
+               <a class="w3-button w3-black w3-border w3-border-black w3-round-large" style="float: left;" href="/urls/<%= [i] %>">Edit</a>
+               <form method="POST" action="/urls/<%= [i] %>/delete"><button class="w3-button w3-black w3-border w3-border-black w3-round-large">Delete</button></form>
                <br>
-            </li>
-                <% }  %>
-         </ul>
+
+
      </div>
+     </div>
+      <% }  %>
     </body>
 </html>
