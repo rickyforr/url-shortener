@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-<style type="text/css">
+    <head>
+        <style type="text/css">
+            li {
+                padding-top: 50px;
+                font-family: sans-serif;
+            }
 
-  li {
-    padding-top: 50px;
-    font-family: sans-serif;
-  }
-
-  input.submit{
-    margin: 50px;
-    padding: 15px;
-    font-size: 20px;
-    background-color: #D1C1E1;
-    border-radius: 20px;
-  }
-
-</style>
-
-  </head>
-   <header><% include ./partials/_header %></header>
-  <body>
-
-    <form action="/urls" method="POST" style="margin:150px;">
-      <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-      <input class="submit" type="submit" value="Shortify!">
-    </form>
-  </body>
+            input.submit {
+                margin: 50px;
+                padding: 15px;
+                font-size: 20px;
+                background-color: #d1c1e1;
+                border-radius: 20px;
+            }
+        </style>
+    </head>
+    <header><% include ('./partials/_header') %></header>
+    <body>
+        <form action="/urls" method="POST" style="margin: 150px">
+            <label for="longURL">Enter a URL:</label>
+            <input
+                id="longURL"
+                type="text"
+                name="longURL"
+                placeholder="http://"
+                style="width: 300px"
+            />
+            <input class="submit" type="submit" value="Shortify!" />
+        </form>
+    </body>
 </html>

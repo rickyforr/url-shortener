@@ -29,12 +29,12 @@ const users = {
     rich: {
         id: "rich1",
         email: "rich@rich.com",
-        password: "abc",
+        password: "$2a$10$XG0GgNXJHmxH9D/CNcwzZuK1fTFStCnP4qluicZYY0eHlYnp12py2",
     },
     ron: {
         id: "ron1",
         email: "ron@ron.com",
-        password: "123",
+        password: "$2a$10$VERWl56iBjzhMFM6tzWDoelvy5/zztpP4eVPvfZwcDiQnUGOudEOG",
     },
 };
 
@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
 //Main Page with short and long urls displayed for logged in users
 app.get("/urls", (req, res) => {
     let ID = req.session.user_id;
-
+console.log(ID);
     let templateVars = {
         userID: req.session.user_id,
         urls: urlDatabase[ID],
@@ -181,16 +181,14 @@ app.get("/logout", (req, res) => {
 //Login POST
 app.post("/login", (req, res) => {
     let userID;
-    console.log(users);
-
     for (var i in users) {
         if (users[i].email === req.body.email) {
             userID = i;
-            break;
         }
     }
     //if password hashed matches hashed password in the database give a cookie and redirect to /urls
     if (userID) {
+        console.log(bcrypt.compareSync(req.body.password, users[userID].password));
         if (bcrypt.compareSync(req.body.password, users[userID].password)) {
             req.session.user_id = userID;
             res.redirect("/urls");

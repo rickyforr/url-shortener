@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>URLSHOWS</title>
+    <head>
+        <title>URLSHOWS</title>
 
-  <style type="text/css">
-  </style>
-
-  </head>
-
-    <header><% include ./partials/_header %></header>
-
-<body>
-
-
-  <form action="/urls/<%= short %> " method="POST" style="margin:150px;">
-      <label for="shortURL"><%= shortUrl %></label>
-      <input id="longUrl" type="text" name="longUrl"  style="width: 300px">
-      <input type="submit" value="Update Url">
-    </form>
-
-</body>
+        <style type="text/css"></style>
+    </head>
+    <header><% include ('./partials/_header') %></header>
+    <body>
+        <form action="/urls/<%= short %> " method="POST" style="margin: 150px">
+            <label for="shortURL"><%= shortUrl %></label>
+            <input
+                id="longUrl"
+                type="text"
+                name="longUrl"
+                style="width: 300px"
+            />
+            <input type="submit" value="Update Url" />
+        </form>
+    </body>
 </html>
