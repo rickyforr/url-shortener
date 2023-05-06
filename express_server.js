@@ -52,7 +52,6 @@ app.get("/", (req, res) => {
 //Main Page with short and long urls displayed for logged in users
 app.get("/urls", (req, res) => {
     let ID = req.session.user_id;
-console.log(ID);
     let templateVars = {
         userID: req.session.user_id,
         urls: urlDatabase[ID],
@@ -188,7 +187,6 @@ app.post("/login", (req, res) => {
     }
     //if password hashed matches hashed password in the database give a cookie and redirect to /urls
     if (userID) {
-        console.log(bcrypt.compareSync(req.body.password, users[userID].password));
         if (bcrypt.compareSync(req.body.password, users[userID].password)) {
             req.session.user_id = userID;
             res.redirect("/urls");
