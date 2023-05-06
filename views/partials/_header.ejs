@@ -67,25 +67,18 @@
   .urls {
     width: 350px;
   }
-
-
-
 </style>
 </head>
-
 <body >
-
   <nav>
     <a href=http://localhost:8080/urls/new>Shorten URL</a>
     <br>
     <a href="http://localhost:8080/urls">Url Database</a>
-
     <% if (userID == null) {%>
       <br>
       <a href="/login">Login</a>
       <br>
       <a href="/register">Register</a>
-
     <%} else {%>
     <p class='user'>Logged in with: <%= users.email %></p>
     <form class="login" action="/logout" method="GET" >
@@ -93,9 +86,7 @@
     </form>
     <% } %>
   </nav>
-
 </body>
-
 </html>
 
 
